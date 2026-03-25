@@ -41,21 +41,18 @@ const navItems: NavItem[] = [
     label: "Customers",
     path: "/customers",
     icon: Users,
-    badge: "Cycle 2",
     roles: [UserRole.ADMIN, UserRole.MANAGER, UserRole.SALES_AGENT],
   },
   {
     label: "Sales",
     path: "/sales",
     icon: DollarSign,
-    badge: "Cycle 2",
     roles: [UserRole.ADMIN, UserRole.MANAGER, UserRole.SALES_AGENT],
   },
   {
     label: "Appointments",
     path: "/appointments",
     icon: CalendarDays,
-    badge: "Cycle 2",
     roles: [UserRole.ADMIN, UserRole.MANAGER, UserRole.SALES_AGENT],
   },
   {

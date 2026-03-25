@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Car, CheckCircle, Clock, XCircle } from "lucide-react";
+import { Car, CheckCircle, Clock, XCircle, DollarSign, CalendarDays } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
 import { Skeleton } from "../components/ui/skeleton";
 import { getVehiclesApi } from "../api/vehicles";
+import { getSalesApi } from "../api/sales";
+import { getAppointmentsApi } from "../api/appointments";
 import { VehicleStatus } from "../types";
 import { cn } from "../lib/utils";
 
@@ -16,12 +18,26 @@ interface StatCard {
 
 export default function Dashboard() {
   // Fetch all vehicles (with a large limit) to derive counts
-  const { data, isLoading } = useQuery({
+  const { data: vehiclesData, isLoading: vehiclesLoading } = useQuery({
     queryKey: ["vehicles", "dashboard"],
     queryFn: () => getVehiclesApi({ limit: 1000 }),
   });
 
-  const vehicles = data?.data ?? [];
+  // Fetch completed sales this month
+  const { data: salesData, isLoading: salesLoading } = useQuery({
+    queryKey: ["sales", "dashboard"],
+    queryFn: () => getSalesApi({ status: "COMPLETED", limit: 1000 }),
+  });
+
+  // Fetch scheduled appointments
+  const { data: appointmentsData, isLoading: appointmentsLoading } = useQuery({
+    queryKey: ["appointments", "dashboard"],
+    queryFn: () => getAppointmentsApi({ status: "SCHEDULED", limit: 1000 }),
+  });
+
+  const isLoading = vehiclesLoading || salesLoading || appointmentsLoading;
+
+  const vehicles = vehiclesData?.data ?? [];
   const totalCount = vehicles.length;
   const availableCount = vehicles.filter(
     (v) => v.status === VehicleStatus.AVAILABLE,
@@ -32,6 +48,20 @@ export default function Dashboard() {
   const soldCount = vehicles.filter(
     (v) => v.status === VehicleStatus.SOLD,
   ).length;
+
+  // Count completed sales this month
+  const sales = salesData?.data ?? [];
+  const now = new Date();
+  const thisMonthSales = sales.filter((s) => {
+    const d = new Date(s.saleDate);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+
+  // Count upcoming scheduled appointments
+  const appointments = appointmentsData?.data ?? [];
+  const upcomingAppointments = appointments.filter((a) => {
+    return new Date(a.dateTime) >= now;
+  }).length;
 
   const stats: StatCard[] = [
     {
@@ -62,13 +92,27 @@ export default function Dashboard() {
       bgColor: "bg-rose-50",
       count: soldCount,
     },
+    {
+      label: "Sales This Month",
+      icon: DollarSign,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      count: thisMonthSales,
+    },
+    {
+      label: "Upcoming Appointments",
+      icon: CalendarDays,
+      color: "text-violet-600",
+      bgColor: "bg-violet-50",
+      count: upcomingAppointments,
+    },
   ];
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold tracking-tight">Overview</h2>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
           <Card key={stat.label}>
             <CardContent className="flex items-center gap-4 p-6">

@@ -117,3 +117,104 @@ export interface VehicleQuery {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
+
+// ── Customer ──
+
+export interface Customer {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone: string;
+  address?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CustomerQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+// ── Sale ──
+
+export type SaleStatus = "PENDING" | "NEGOTIATION" | "COMPLETED" | "CANCELLED";
+export type PaymentMethod = "CASH" | "BANK_TRANSFER" | "FINANCE" | "CHEQUE";
+
+export interface Sale {
+  id: number;
+  vehicleId: number;
+  customerId: number;
+  agentId: number;
+  salePrice: number;
+  saleDate: string;
+  paymentMethod: PaymentMethod;
+  status: SaleStatus;
+  notes?: string;
+  vehicle?: Vehicle;
+  customer?: Customer;
+  agent?: User;
+  invoice?: Invoice;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SaleQuery {
+  page?: number;
+  limit?: number;
+  status?: SaleStatus;
+  customerId?: number;
+  vehicleId?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+// ── Invoice ──
+
+export type PaymentStatus = "UNPAID" | "PARTIAL" | "PAID" | "OVERDUE";
+
+export interface Invoice {
+  id: number;
+  saleId: number;
+  amount: number;
+  tax: number;
+  total: number;
+  issuedDate: string;
+  paymentStatus: PaymentStatus;
+  sale?: Sale;
+}
+
+// ── Appointment ──
+
+export type AppointmentType = "TEST_DRIVE" | "CONSULTATION";
+export type AppointmentStatus = "SCHEDULED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+
+export interface Appointment {
+  id: number;
+  customerId: number;
+  vehicleId?: number;
+  agentId: number;
+  type: AppointmentType;
+  dateTime: string;
+  status: AppointmentStatus;
+  notes?: string;
+  customer?: Customer;
+  vehicle?: Vehicle;
+  agent?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AppointmentQuery {
+  page?: number;
+  limit?: number;
+  status?: AppointmentStatus;
+  type?: AppointmentType;
+  customerId?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
