@@ -21,7 +21,8 @@ router.get(
   validate(vehicleQuerySchema, 'query'),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { vehicles, meta } = await vehiclesService.getVehicles(req.query as any);
+      const query = (req as any).validated?.query ?? req.query;
+      const { vehicles, meta } = await vehiclesService.getVehicles(query);
       res.json(formatSuccess(vehicles, meta));
     } catch (error) {
       next(error);
