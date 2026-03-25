@@ -1,10 +1,23 @@
 FROM node:18-alpine
+
+# Install OpenSSL for Prisma compatibility
+RUN apk add --no-cache openssl
+
 WORKDIR /app
+
+# Install dependencies
 COPY package*.json ./
 RUN npm install
+
+# Copy source
 COPY . .
-# We'll rely on the host generating prisma and having node_modules locally, or we do it here. 
-# Better to generate it here to ensure the container architecture matches.
+
+# Generate Prisma client
 RUN npx prisma generate
+
+# Create entrypoint script
+RUN printf '#!/bin/sh\nset -e\necho "Running Prisma migrations..."\nnpx prisma migrate dev --name init --skip-generate 2>&1 || true\necho "Seeding database..."\nnpx prisma db seed 2>&1 || echo "Seed skipped"\necho "Starting server..."\nexec npm run dev\n' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
 EXPOSE 5000
-CMD ["npm", "run", "dev"]
+
+CMD ["/app/entrypoint.sh"]

@@ -10,7 +10,14 @@ export function validate(schema: ZodSchema, source: 'body' | 'query' | 'params')
       return;
     }
 
-    (req as unknown as Record<string, unknown>)[source] = result.data;
+    // Express 5 makes query/params read-only, so store parsed data on req instead
+    if (source === 'body') {
+      req.body = result.data;
+    } else {
+      // Attach validated data to a custom property
+      (req as any).validated = (req as any).validated || {};
+      (req as any).validated[source] = result.data;
+    }
     next();
   };
 }
