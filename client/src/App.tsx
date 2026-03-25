@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { ProtectedRoute } from "./components/shared/ProtectedRoute";
+import { DashboardLayout } from "./components/layout/DashboardLayout";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import VehicleList from "./pages/vehicles/VehicleList";
+import VehicleDetail from "./pages/vehicles/VehicleDetail";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+// Placeholder for vehicle create / edit form (to be built)
+function VehicleForm() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold tracking-tight">Vehicle Form</h2>
+      <p className="text-muted-foreground">Vehicle form coming soon.</p>
+    </div>
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/vehicles" element={<VehicleList />} />
+              <Route path="/vehicles/new" element={<VehicleForm />} />
+              <Route path="/vehicles/:id" element={<VehicleDetail />} />
+              <Route path="/vehicles/:id/edit" element={<VehicleForm />} />
+            </Route>
+          </Route>
+
+          {/* Fallback */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
