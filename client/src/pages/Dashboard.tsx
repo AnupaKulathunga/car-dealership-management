@@ -20,19 +20,19 @@ export default function Dashboard() {
   // Fetch all vehicles (with a large limit) to derive counts
   const { data: vehiclesData, isLoading: vehiclesLoading } = useQuery({
     queryKey: ["vehicles", "dashboard"],
-    queryFn: () => getVehiclesApi({ limit: 1000 }),
+    queryFn: () => getVehiclesApi({ limit: 1000 } as any),
   });
 
   // Fetch completed sales this month
   const { data: salesData, isLoading: salesLoading } = useQuery({
     queryKey: ["sales", "dashboard"],
-    queryFn: () => getSalesApi({ status: "COMPLETED", limit: 1000 }),
+    queryFn: () => getSalesApi({ status: "COMPLETED", limit: 1000 } as any),
   });
 
   // Fetch scheduled appointments
   const { data: appointmentsData, isLoading: appointmentsLoading } = useQuery({
     queryKey: ["appointments", "dashboard"],
-    queryFn: () => getAppointmentsApi({ status: "SCHEDULED", limit: 1000 }),
+    queryFn: () => getAppointmentsApi({ status: "SCHEDULED", limit: 1000 } as any),
   });
 
   const isLoading = vehiclesLoading || salesLoading || appointmentsLoading;

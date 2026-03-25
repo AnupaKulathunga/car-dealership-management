@@ -15,6 +15,7 @@ import SaleDetail from "./pages/sales/SaleDetail";
 import CreateSale from "./pages/sales/CreateSale";
 import AppointmentList from "./pages/appointments/AppointmentList";
 import CreateAppointment from "./pages/appointments/CreateAppointment";
+import ComingSoon from "./pages/ComingSoon";
 
 export default function App() {
   return (
@@ -49,6 +50,10 @@ export default function App() {
               {/* Appointments */}
               <Route path="/appointments" element={<AppointmentList />} />
               <Route path="/appointments/new" element={<CreateAppointment />} />
+
+              {/* Coming Soon (Cycle 3+) */}
+              <Route path="/reports" element={<ComingSoon />} />
+              <Route path="/reports/*" element={<ComingSoon />} />
             </Route>
           </Route>
 
