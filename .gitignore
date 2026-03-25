@@ -1,5 +1,31 @@
 node_modules
 .env
+.env.local
 dist
 build
 .DS_Store
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# Python
+__pycache__/
+*.pyc
+
+# Misc
+nohup.out
+*.json.bak
+
+# IDE
+.vscode/
+.idea/
+
+# AI agent architecture (local only)
+.ai/
+docs/personas/
+docs/ledger/
+docs/contracts/
